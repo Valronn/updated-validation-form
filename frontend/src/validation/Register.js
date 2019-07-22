@@ -1,6 +1,12 @@
 import React from "react";
-import { Link } from "react-router-dom";
-export default class Register extends React.Component {
+import PropTypes from "prop-types";
+import { Link, withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { registerUser } from "../actions/authActions";
+import classnames from "classnames";
+import isEmpty from "is-empty";
+
+class Register extends React.Component {
   state = {
     name: "",
     password: "",
@@ -8,6 +14,18 @@ export default class Register extends React.Component {
     email: "",
     errors: {}
   };
+  componentDidMount() {
+    if (this.props.auth.isAuthenticated) {
+      this.props.history.push("/home");
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.errors) {
+      this.setState({
+        errors: nextProps.errors
+      });
+    }
+  }
   onChange = e => {
     this.setState({
       [e.target.id]: e.target.value
@@ -21,10 +39,10 @@ export default class Register extends React.Component {
       password: this.state.password,
       password2: this.state.password2
     };
-    console.log(newUser);
+    this.props.registerUser(newUser, this.props.history);
   };
   render() {
-    const { errors } = this.state.errors;
+    const { errors } = this.state;
     return (
       <div id="register" className="container-fluid">
         <div className="container">
@@ -41,17 +59,24 @@ export default class Register extends React.Component {
             <div className="card register-window col-md-6 col-lg-6 col-sm-12 col-xs-12">
               <h1 className="card-title text-center pt-2">Register</h1>
               <div className="underline" />
-              <form onSubmit={this.onSubmit}>
+              <form noValidate onSubmit={this.onSubmit}>
                 <fieldset className="form-group bmd-form-group">
                   <label htmlFor="username" className="bmd-label-static">
                     Username
                   </label>
                   <input
                     type="text"
-                    className="form-control"
+                    className={
+                      isEmpty(errors)
+                        ? "form-control"
+                        : classnames("form-control", {
+                            "is-invalid": errors.name
+                          })
+                    }
                     id="username"
                     onChange={this.onChange}
                   />
+                  <div className="invalid-feedback">{errors.name}</div>
                 </fieldset>
                 <div className="form-group bmd-form-group">
                   <label htmlFor="email" className="bmd-label-static">
@@ -59,10 +84,17 @@ export default class Register extends React.Component {
                   </label>
                   <input
                     type="email"
-                    className="form-control"
+                    className={
+                      isEmpty(errors)
+                        ? "form-control"
+                        : classnames("form-control", {
+                            "is-invalid": errors.email
+                          })
+                    }
                     id="email"
                     onChange={this.onChange}
                   />
+                  <div className="invalid-feedback">{errors.email}</div>
                 </div>
                 <div className="form-group bmd-form-group">
                   <label htmlFor="password" className="bmd-label-static">
@@ -70,10 +102,17 @@ export default class Register extends React.Component {
                   </label>
                   <input
                     type="password"
-                    className="form-control"
+                    className={
+                      isEmpty(errors)
+                        ? "form-control"
+                        : classnames("form-control", {
+                            "is-invalid": errors.password
+                          })
+                    }
                     id="password"
                     onChange={this.onChange}
                   />
+                  <div className="invalid-feedback">{errors.password}</div>
                 </div>
                 <div className="form-group bmd-form-group">
                   <label htmlFor="password2" className="bmd-label-static">
@@ -81,10 +120,17 @@ export default class Register extends React.Component {
                   </label>
                   <input
                     type="password"
-                    className="form-control"
+                    className={
+                      isEmpty(errors)
+                        ? "form-control"
+                        : classnames("form-control", {
+                            "is-invalid": errors.password2
+                          })
+                    }
                     id="password2"
                     onChange={this.onChange}
                   />
+                  <div className="invalid-feedback">{errors.password2}</div>
                 </div>
                 <div className="d-flex justify-content-end">
                   <Link to="/">
@@ -107,3 +153,19 @@ export default class Register extends React.Component {
     );
   }
 }
+
+Register.propTypes = {
+  registerUser: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+  errors: state.errors
+});
+
+export default connect(
+  mapStateToProps,
+  { registerUser }
+)(withRouter(Register));

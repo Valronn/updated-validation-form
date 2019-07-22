@@ -1,5 +1,4 @@
 import { SET_CURRENT_USER, USER_LOADING } from "../actions/types";
-import { type } from "os";
 const isEmpty = require("is-empty");
 
 const initialState = {
@@ -9,7 +8,7 @@ const initialState = {
 };
 
 export default (state = initialState, action) => {
-  switch (type.action) {
+  switch (action.type) {
     case SET_CURRENT_USER:
       return {
         ...state,
@@ -18,7 +17,7 @@ export default (state = initialState, action) => {
       };
     case USER_LOADING:
       return {
-        ...this.state,
+        ...state,
         loading: true
       };
     default:

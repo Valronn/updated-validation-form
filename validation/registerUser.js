@@ -16,9 +16,9 @@ module.exports = function registerValidation(data) {
 
   //Email
   if (validator.isEmpty(data.email)) {
-    errors.name = "Email field mustn't be empty!";
+    errors.email = "Email field mustn't be empty!";
   } else if (!validator.isEmail(data.email)) {
-    erorrs.email = "Email is invalid";
+    errors.email = "Email is invalid";
   }
 
   //Pass
