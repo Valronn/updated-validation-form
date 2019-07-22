@@ -19,4 +19,4 @@ Start both frontend and nodemon backend servers.
 
 ## Learn More
 
-App is in development.....
+Simple validation form with dark theme, using jwtToken as package transfer and redux as state manager.
